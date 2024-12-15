@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "GenerateMineField.hpp"
+#include "GameFunctions.hpp"
 
 
 int main(int argc, char** argv) {
@@ -8,12 +8,22 @@ int main(int argc, char** argv) {
     int size_y;
     int num_mines;
 
+    int x, y;
+
     std::cin >> size_x >> size_y >> num_mines;
 
-    GenerateMineField *field = new GenerateMineField(size_x, size_y, num_mines);
+    GameFunctions *field = new GameFunctions(size_x, size_y, num_mines);
 
-    field->place_mines(num_mines);
+    field->place_mines(num_mines); 
     field->fill_num_field();
+
+    bool gameover = false;
+    field->display_current_map();
+    while (!gameover) {
+        std::cin >> x >> y;
+        gameover = field->area_reveal(Coordinate{x, y});
+        field->display_current_map();
+    }
 
     return EXIT_SUCCESS;
 }

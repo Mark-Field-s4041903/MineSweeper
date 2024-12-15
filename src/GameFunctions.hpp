@@ -3,13 +3,15 @@
 
 #include "GenerateMineField.hpp"
 
+#include <iostream>
+
 enum PositionType {
     is_mine = -1,  // Represents a mine
     is_zero = 0,   // Represents zero mines around
     is_num = 1     // Represents positions with (a) adjacent mine(s)
 };
 
-class GameFunctions : protected GenerateMineField
+class GameFunctions : public GenerateMineField
 {
     public:
         /* Constructor */
@@ -29,7 +31,7 @@ class GameFunctions : protected GenerateMineField
         void display_current_map();
 
     private:
-        void floodfill_zeroes(Coordinate selected_position);
+        void floodfill_zeroes(Coordinate current_pos);
 };
 
 #endif //ASSIGN_GAMEFUNCTIONS_HPP
