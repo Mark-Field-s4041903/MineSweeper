@@ -1,7 +1,5 @@
 #include "GameFunctions.hpp"
 
-#define EMPTY_CHAR '~'
-
 GameFunctions::GameFunctions(int grid_x, int grid_y, int num_mines)
                         : GenerateMineField(grid_x, grid_y, num_mines)
 {

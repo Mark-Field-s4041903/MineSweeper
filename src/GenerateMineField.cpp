@@ -1,8 +1,5 @@
 #include "GenerateMineField.hpp"
 
-#define NONE 0
-#define MINE -1
-
 GenerateMineField::GenerateMineField(int grid_x, int grid_y, int num_mines)
 {
     // Add args into the class
