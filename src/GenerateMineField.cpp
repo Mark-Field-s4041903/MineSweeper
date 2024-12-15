@@ -1,6 +1,7 @@
 #include "GenerateMineField.hpp"
 
 #define NONE 0
+#define MINE -1
 
 GenerateMineField::GenerateMineField(int grid_x, int grid_y, int num_mines)
 {
@@ -55,6 +56,9 @@ void GenerateMineField::place_mines(int mines_remaining)
 // place_mines must be run first
 void GenerateMineField::fill_num_field()
 {   
+    /*
+    * Checks each position in the map and shows the number of mines adjacent to it
+    */
     for (int y = 0; y < this->grid_y; y++) {
         for (int x = 0; x < this->grid_x; x++) {
             
@@ -68,10 +72,31 @@ void GenerateMineField::fill_num_field()
                     && next_pos < Coordinate{this->grid_x, this->grid_y}
                     && this->mine_layout[next_pos.x][next_pos.y]) 
                 {
-                    if (this->mine_layout[x][y]) this->num_field[x][y] = 0;
+                    if (this->mine_layout[x][y]) this->num_field[x][y] = MINE;
                     else this->num_field[x][y] ++;
                 }
             }
         }
+    }
+}
+
+GenerateMineField::~GenerateMineField()
+{
+    // Deallocate the mine_layout array
+    if (this->mine_layout != nullptr) {
+        for (int i = 0; i < this->grid_y; ++i) {
+            delete[] this->mine_layout[i]; // Deallocate each row
+        }
+        delete[] this->mine_layout; // Deallocate the array of pointers
+        this->mine_layout = nullptr; // Set to nullptr for safety
+    }
+
+    // Deallocate the num_field array
+    if (this->num_field != nullptr) {
+        for (int i = 0; i < this->grid_y; ++i) {
+            delete[] this->num_field[i]; // Deallocate each row
+        }
+        delete[] this->num_field; // Deallocate the array of pointers
+        this->num_field = nullptr; // Set to nullptr for safety
     }
 }

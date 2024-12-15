@@ -13,8 +13,9 @@ clean:
 
 # Create Executable
 mineSweeper: 	$(OBJ_DIR)/GenerateMineField.o \
-				$(OBJ_DIR)/mineSweeper.o 
-								
+				$(OBJ_DIR)/mineSweeper.o \
+				$(OBJ_DIR)/GameFunctions.o
+
 	g++ -Wall -Werror -std=c++17 -g -O -o mineSweeper $^
 
 # Utils Rule: For files in the Utils folder

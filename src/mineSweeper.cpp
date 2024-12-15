@@ -1,6 +1,6 @@
-#include "GenerateMineField.hpp"
-// #include "Utils/arrayUtils.hpp"
+#include <iostream>
 
+#include "GenerateMineField.hpp"
 
 
 int main(int argc, char** argv) {
@@ -13,9 +13,7 @@ int main(int argc, char** argv) {
     GenerateMineField *field = new GenerateMineField(size_x, size_y, num_mines);
 
     field->place_mines(num_mines);
-    field->fill_num_field(Coordinate{1,1});
+    field->fill_num_field();
 
-
-
-return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }
