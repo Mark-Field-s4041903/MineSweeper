@@ -6,8 +6,8 @@
 #include <list>
 
 // Template function to print a 2D array
-template <typename T>
-void printArray(int width, int length, T** array)
+template <typename A>
+void printArray(int width, int length, A** array)
 {
     for (int y = 0; y < length; y++) {
         for (int x = 0; x < width; x++) {
