@@ -1,5 +1,7 @@
 #include "GenerateMineField.hpp"
 
+#define NONE 0
+
 GenerateMineField::GenerateMineField(int grid_x, int grid_y, int num_mines)
 {
     // Add args into the class
@@ -18,8 +20,8 @@ GenerateMineField::GenerateMineField(int grid_x, int grid_y, int num_mines)
     this->num_field = new int*[this->grid_y];
     for (int i = 0; i < grid_y; i++) this->num_field[i] = new int[this->grid_x];
 
-    // Fill num_field with 0
-    std::fill(&num_field[0][0], &num_field[0][0] + grid_x * grid_y, 0);
+    // Fill num_field with 0 (None)
+    std::fill(&num_field[0][0], &num_field[0][0] + grid_x * grid_y, NONE);
 
     // Create a seed sequence using the current time
     std::seed_seq seed_seq{static_cast<unsigned int>(std::time(0))};
@@ -46,29 +48,30 @@ void GenerateMineField::place_mines(int mines_remaining)
             this->mine_layout[pos_x][pos_y] = true;
             mines_remaining --;
         }
-
         place_mines(mines_remaining);
-
     }
 }
 
 // place_mines must be run first
-// The start_pos must not contaizn a mine
-void GenerateMineField::fill_num_field(Coordinate current_pos)
+void GenerateMineField::fill_num_field()
 {   
-    for (Coordinate move : POSSIBLE_MOVES) {
-        std::cout << current_pos << std::endl;
-        Coordinate next_pos = current_pos + move;
-        if (Coordinate{0, 0} <= next_pos
-            && Coordinate{this->grid_x, this->grid_y} > next_pos
-            && this->mine_layout[next_pos.x][next_pos.y]) 
-        {
-            // If there is a mine near it then increase the count
-            this->num_field[current_pos.x][current_pos.y] ++;
-        }
-        else {
-            fill_num_field(next_pos);
+    for (int y = 0; y < this->grid_y; y++) {
+        for (int x = 0; x < this->grid_x; x++) {
+            
+            // Iterate through all adjacent positions and record the number of mines
+            for (Coordinate move : POSSIBLE_MOVES) {
+                Coordinate next_pos = Coordinate{x, y} + move;
+
+                // Check to make sure the next position is inbounds
+                // If there is a mine near it then increase the count
+                if (next_pos >= Coordinate{0, 0} 
+                    && next_pos < Coordinate{this->grid_x, this->grid_y}
+                    && this->mine_layout[next_pos.x][next_pos.y]) 
+                {
+                    if (this->mine_layout[x][y]) this->num_field[x][y] = 0;
+                    else this->num_field[x][y] ++;
+                }
+            }
         }
     }
-    printArray(this->grid_x, this->grid_y, this->num_field);
 }

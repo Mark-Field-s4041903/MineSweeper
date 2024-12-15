@@ -10,6 +10,9 @@
 
 class GenerateMineField 
 {
+    private:
+        // For fill_num_field
+        // std::list<Coordinate> checked_coords;
     protected:
         /* Grid Dimensions */
         int grid_x;
@@ -31,7 +34,7 @@ class GenerateMineField
 
         /* MineField Creation Methods */
         void place_mines(int mines_remaining); // Uses mine_layout and num_mines
-        void fill_num_field(Coordinate start_pos);
+        void fill_num_field();
 
 };
 
