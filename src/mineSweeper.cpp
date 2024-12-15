@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
     bool completed = false;
     field->display_current_map();
     
-    while (!gameover || completed) {
+    while (!gameover && !completed) {
         std::cin >> x >> y;
         gameover = field->area_reveal(Coordinate{x, y});
         completed = field->check_if_finished();
