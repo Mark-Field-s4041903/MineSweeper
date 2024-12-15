@@ -1,6 +1,6 @@
 #include "GameFunctions.hpp"
 
-#define EMPTY_CHAR ' '
+#define EMPTY_CHAR '~'
 
 GameFunctions::GameFunctions(int grid_x, int grid_y, int num_mines)
                         : GenerateMineField(grid_x, grid_y, num_mines)
@@ -15,19 +15,20 @@ GameFunctions::GameFunctions(int grid_x, int grid_y, int num_mines)
     }
 }
 
-// Is called by area_reveal(), can be used as needed
+// Is only called by area_reveal()
 PositionType GameFunctions::check_position(Coordinate selected_position)
 {
     // Checks the selected position and assigns it to a PositionType
 
-    PositionType curr_pos_type;
+    PositionType pos_type;
     int pos_num = this->num_field[selected_position.x][selected_position.y];
+    bool selected_mine = this->mine_layout[selected_position.x][selected_position.y];
 
-    if (pos_num == -1) curr_pos_type = is_mine;
-    else if (pos_num == 0) curr_pos_type = is_zero;
-    else curr_pos_type = is_num;
+    if (selected_mine) pos_type = is_mine;
+    else if (pos_num == 0) pos_type = is_zero;
+    else pos_type = is_num;
 
-    return curr_pos_type;
+    return pos_type;
 }
 
 // GenerateMineField::fill_num_field() must be run first
@@ -49,7 +50,6 @@ bool GameFunctions::area_reveal(Coordinate selected_position)
     if (pos_type == is_zero) 
     {
         this->floodfill_zeroes(selected_position);
-        // this->game_map[selected_position.x][selected_position.y] = '0';
     }
     else if (pos_type == is_mine)
     {
@@ -61,7 +61,7 @@ bool GameFunctions::area_reveal(Coordinate selected_position)
         for (int x = 0; x < this->grid_x; x++) {
             for (int y = 0; y < this->grid_y; y++) {
                 if (selected_position == Coordinate{x, y}) this->game_map[x][y] = 'X';
-                else if (this->mine_layout[x][y]) this->game_map[x][y] = 'O';
+                else if (this->mine_layout[x][y]) this->game_map[x][y] = '@';
             }
         }
     }
@@ -76,13 +76,14 @@ bool GameFunctions::area_reveal(Coordinate selected_position)
 
 void GameFunctions::floodfill_zeroes(Coordinate current_pos) 
 {
-    // Base case: not checked
+    // Uses floodfill to reveal all connected empty spaces and the set of numbers
     if (this->game_map[current_pos.x][current_pos.y] == EMPTY_CHAR) 
     {
         if (this->num_field[current_pos.x][current_pos.y] == 0) 
         {
-            this->game_map[current_pos.x][current_pos.y] = '0';
+            this->game_map[current_pos.x][current_pos.y] = ' ';
 
+            // Look for the next place to move to
             for (Coordinate move : POSSIBLE_MOVES) {
                 Coordinate next_pos = current_pos + move;
 
@@ -93,7 +94,7 @@ void GameFunctions::floodfill_zeroes(Coordinate current_pos)
                 }
             }
         } 
-        else 
+        else // Reveal the first set of numbers
         {
             this->game_map[current_pos.x][current_pos.y] = 
                 static_cast<char>('0' + this->num_field[current_pos.x][current_pos.y]);
@@ -110,6 +111,36 @@ void GameFunctions::display_current_map()
         }
         std::cout << std::endl;
     }
+}
+
+bool GameFunctions::check_if_finished()
+{
+    // checks to see if the game is finished
+    // Returns false if not finished
+    // If finished display all bombs
+
+    bool is_finished = false;
+    int num_squares_remaining = 0;
+
+    for (int x = 0; x < this->grid_x; x++) {
+        for (int y = 0; y < this->grid_y; y++) {
+            if (this->game_map[x][y] == EMPTY_CHAR) num_squares_remaining ++;
+        }
+    }
+
+    if (num_squares_remaining == this->num_mines) 
+    {
+        is_finished = true;
+
+        // Reveal bombs
+        for (int x = 0; x < this->grid_x; x++) {
+            for (int y = 0; y < this->grid_y; y++) {
+                if (this->mine_layout[x][y]) this->game_map[x][y] = '!';
+            }
+        }
+    }
+
+    return is_finished;
 }
 
 GameFunctions::~GameFunctions() 

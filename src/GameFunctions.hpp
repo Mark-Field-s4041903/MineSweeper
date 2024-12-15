@@ -24,13 +24,12 @@ class GameFunctions : public GenerateMineField
         char** game_map;
 
         /* Game Functions */
-        PositionType check_position(Coordinate selected_position);
-
-        /* Map functions */
         bool area_reveal(Coordinate selected_position);
         void display_current_map();
+        bool check_if_finished();
 
     private:
+        PositionType check_position(Coordinate selected_position);
         void floodfill_zeroes(Coordinate current_pos);
 };
 

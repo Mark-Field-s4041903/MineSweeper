@@ -18,10 +18,13 @@ int main(int argc, char** argv) {
     field->fill_num_field();
 
     bool gameover = false;
+    bool completed = false;
     field->display_current_map();
-    while (!gameover) {
+    
+    while (!gameover || completed) {
         std::cin >> x >> y;
         gameover = field->area_reveal(Coordinate{x, y});
+        completed = field->check_if_finished();
         field->display_current_map();
     }
 
