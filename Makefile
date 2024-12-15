@@ -1,6 +1,7 @@
 # Directories
 SRC_DIR = src
 UTIL_DIR = $(SRC_DIR)/Utils
+BASE_DIR = $(SRC_DIR)/Base
 OBJ_DIR = ObjectFiles
 
 .default: all
@@ -22,7 +23,11 @@ mineSweeper: 	$(OBJ_DIR)/GenerateMineField.o \
 $(OBJ_DIR)/%.o: $(UTIL_DIR)/%.cpp | $(OBJ_DIR)
 	g++ -Wall -Werror -std=c++17 -g -O -c $< -o $@
 
-# Basic Rule: Files in the main directory
+# Basic Rule: Files in the Base folder
+$(OBJ_DIR)/%.o : $(BASE_DIR)/%.cpp | $(OBJ_DIR)
+	g++ -Wall -Werror -std=c++17 -g -O -c $< -o $@
+
+# Src Rule: Files in the main directory
 $(OBJ_DIR)/%.o : $(SRC_DIR)/%.cpp | $(OBJ_DIR)
 	g++ -Wall -Werror -std=c++17 -g -O -c $< -o $@
 

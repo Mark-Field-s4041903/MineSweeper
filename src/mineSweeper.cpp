@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "GameFunctions.hpp"
+#include "Base/GameFunctions.hpp"
 
 
 int main(int argc, char** argv) {

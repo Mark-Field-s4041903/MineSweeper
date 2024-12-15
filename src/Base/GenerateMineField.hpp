@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <list>
 
-#include "Utils/arrayUtils.hpp"
+#include "../Utils/arrayUtils.hpp"
 
 #define NONE 0
 #define MINE -1
