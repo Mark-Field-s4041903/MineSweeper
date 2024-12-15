@@ -1,9 +1,11 @@
 #ifndef ASSIGN_GAMEFUNCTIONS_HPP
 #define ASSIGN_GAMEFUNCTIONS_HPP
 
+#include <iostream>
+
 #include "GenerateMineField.hpp"
 
-#include <iostream>
+#define EMPTY_CHAR '~'
 
 enum PositionType {
     is_mine = -1,  // Represents a mine

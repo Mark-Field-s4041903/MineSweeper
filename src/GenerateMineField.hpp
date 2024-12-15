@@ -8,6 +8,9 @@
 
 #include "Utils/arrayUtils.hpp"
 
+#define NONE 0
+#define MINE -1
+
 class GenerateMineField 
 {
     protected:
