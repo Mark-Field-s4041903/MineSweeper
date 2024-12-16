@@ -58,8 +58,8 @@ bool GameFunctions::area_reveal(Coordinate selected_position)
         // Reveal bombs - @ for the selected bomb and # for all others
         for (int x = 0; x < this->grid_x; x++) {
             for (int y = 0; y < this->grid_y; y++) {
-                if (selected_position == Coordinate{x, y}) this->game_map[x][y] = 'X';
-                else if (this->mine_layout[x][y]) this->game_map[x][y] = '@';
+                if (selected_position == Coordinate{x, y}) this->game_map[x][y] = HIT_MINE_CHAR;
+                else if (this->mine_layout[x][y]) this->game_map[x][y] = GAMEOVER_DISPLAY_CHAR;
             }
         }
     }
@@ -122,7 +122,11 @@ bool GameFunctions::check_if_finished()
 
     for (int x = 0; x < this->grid_x; x++) {
         for (int y = 0; y < this->grid_y; y++) {
-            if (this->game_map[x][y] == EMPTY_CHAR) num_squares_remaining ++;
+            if (this->game_map[x][y] == EMPTY_CHAR 
+                || this->game_map[x][y] == UNKNOWN_CHAR) 
+                {
+                    num_squares_remaining ++;
+                }
         }
     }
 
@@ -133,7 +137,7 @@ bool GameFunctions::check_if_finished()
         // Reveal bombs
         for (int x = 0; x < this->grid_x; x++) {
             for (int y = 0; y < this->grid_y; y++) {
-                if (this->mine_layout[x][y]) this->game_map[x][y] = '!';
+                if (this->mine_layout[x][y]) this->game_map[x][y] = WIN_MINE_CHAR;
             }
         }
     }

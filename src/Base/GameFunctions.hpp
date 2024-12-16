@@ -4,8 +4,7 @@
 #include <iostream>
 
 #include "GenerateMineField.hpp"
-
-#define EMPTY_CHAR '~'
+#include "../Utils/configDefs.hpp"
 
 enum PositionType {
     is_mine = -1,  // Represents a mine
