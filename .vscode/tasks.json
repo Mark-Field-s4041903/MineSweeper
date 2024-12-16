@@ -1,0 +1,21 @@
+{
+    "label": "build",
+    "type": "shell",
+    "command": "g++",
+    "args": [
+        "-g",
+        "Mine/src/mineSweeper.cpp",
+        "${workspaceFolder}/src/GameGUI.cpp",
+        "-o",
+        "${workspaceFolder}/mineSweeper",
+        "-lsfml-graphics",
+        "-lsfml-window",
+        "-lsfml-system"
+    ],
+    "group": {
+        "kind": "build",
+        "isDefault": true
+    },
+    "problemMatcher": ["$gcc"],
+    "detail": "Build MineSweeper with SFML"
+}

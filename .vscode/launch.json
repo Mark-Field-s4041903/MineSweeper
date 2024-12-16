@@ -2,13 +2,25 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "MineSweeper Debug",
             "type": "lldb",
             "request": "launch",
-            "name": "MineSweeper Debug",
             "program": "${workspaceFolder}/mineSweeper",
             "args": [],
+            // "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
-            // "preLaunchTask": "build"
+            // "environment": [],
+            // "externalConsole": false,
+            // "MIMode": "gdb",
+            // "setupCommands": [
+            //     {
+            //         "description": "Enable pretty-printing for gdb",
+            //         "text": "-enable-pretty-printing",
+            //         "ignoreFailures": true
+            //     }
+            // ],
+            "preLaunchTask": "build",
+            // "miDebuggerPath": "/usr/bin/gdb"
         }
     ]
 }
