@@ -37,18 +37,13 @@ int main(int argc, char** argv) {
     else
     {
         GameGUI *window = new GameGUI(size_x, size_y, num_mines);
-        GameFunctions *field = new GameFunctions(size_x, size_y, num_mines);
-        field->place_mines(num_mines); 
-        field->fill_num_field();
+        window->place_mines(num_mines); 
+        window->fill_num_field();
 
         window->map_update();
         while(window->get_events())
         {
-            std::cin >> x >> y;
-            gameover = field->area_reveal(Coordinate{x, y});
-            completed = field->check_if_finished();
-            field->display_current_map();
-
+            completed = window->check_if_finished();
             window->map_update();
         }
     }

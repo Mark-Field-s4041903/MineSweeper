@@ -7,68 +7,119 @@ GameGUI::GameGUI(int grid_x, int grid_y, int num_mines)
     this->window = new sf::RenderWindow(
         sf::VideoMode(this->grid_x * CELL_SIZE, this->grid_y * CELL_SIZE), WINDOW_NAME);
 
-    // Create the base_grid with grid_y number of rows
-    this->base_grid = new sf::RectangleShape*[this->grid_y];
-
-    // Create grid_x number of columns
-    for (int i = 0; i < grid_y; i++) {
-        this->base_grid[i] = new sf::RectangleShape[this->grid_x];
+    // Create the base_grid as a 2D array of sf::RectangleShape
+    this->base_grid = new sf::RectangleShape*[this->grid_x];
+    for (int x = 0; x < grid_x; ++x) {
+        this->base_grid[x] = new sf::RectangleShape[this->grid_y];
     }
 
-    // Create the text_grid with grid_y number of rows
-    this->text_grid = new sf::Text*[this->grid_y];
-
-    // Create text_grid number of columns
-    for (int i = 0; i < grid_y; i++) {
-        this->text_grid[i] = new sf::Text[this->grid_x];
+    // Create the text_grid as a 2D array of sf::Text
+    this->text_grid = new sf::Text*[this->grid_x];
+    for (int x = 0; x < grid_x; ++x) {
+        this->text_grid[x] = new sf::Text[this->grid_y];
     }
 
     // Set a font
-    this->font.loadFromFile(FONT_PATH);
+    if (!this->font.loadFromFile(FONT_PATH))
+    {
+        throw std::runtime_error("!!! FONT LOADING FAILED !!! - "  + std::string(FONT_PATH));
+    }
+
+
+    // Initialize base_grid and text_grid with default shapes and text
+    for (int y = 0; y < grid_y; ++y) {
+        for (int x = 0; x < grid_x; ++x) {
+
+            // Initialize base_grid
+            this->base_grid[x][y].setSize(sf::Vector2f(CELL_SIZE - 2, CELL_SIZE - 2));
+            this->base_grid[x][y].setPosition(x * CELL_SIZE, y * CELL_SIZE);
+            this->base_grid[x][y].setFillColor(CELL_BASE_COLOUR);
+            this->base_grid[x][y].setOutlineThickness(OUTLINE_THICKNESS);
+            this->base_grid[x][y].setOutlineColor(CELL_OUTLINE);
+
+            // Initialize text_grid
+            this->text_grid[x][y].setFont(this->font);
+            this->text_grid[x][y].setString(" ");
+            this->text_grid[x][y].setCharacterSize(TEXT_SIZE);
+            this->text_grid[x][y].setFillColor(TEXT_COLOUR);
+            this->text_grid[x][y].setPosition(
+                x * CELL_SIZE + (CELL_SIZE / 2),
+                y * CELL_SIZE + (CELL_SIZE / 2)
+            );
+        }
+    }
 }
 
 void GameGUI::map_update()
 {
+    /*
+    * Uses the game_map from GameFunctions to update the map displayed in the gui
+    * Mostly only edits the text_grid
+    */
+
     for (int y = 0; y < grid_y; ++y) {
         for (int x = 0; x < grid_x; ++x) {
-            sf::RectangleShape cell(sf::Vector2f(CELL_SIZE - 2, CELL_SIZE - 2)); // Slightly smaller for base_grid lines
-            cell.setPosition(x * CELL_SIZE, y * CELL_SIZE);
 
-            // Cell styling
-            cell.setFillColor(CELL_COLOUR);
-            cell.setOutlineThickness(OUTLINE_THICKNESS);
-            cell.setOutlineColor(CELL_OUTLINE);
+            // Update the text in the cell
+            char current_char = this->game_map[x][y];
+            this->text_grid[x][y].setString(std::string(1, current_char));
 
-            // Add cell -Broken?
-            this->base_grid[x][y] = cell;
+            // If the square has now been revealed then change the colour
+            if (this->game_map[x][y] != EMPTY_CHAR && this->game_map[x][y] != UNKNOWN_CHAR)
+            {
+                this->base_grid[x][y].setFillColor(CELL_BACKGROUND);
+            }
 
-            // Create the text for the cell
-            sf::Text charText;
-            charText.setFont(this->font);
-            charText.setString(static_cast<std::string>("" + this->game_map[x][y]));  // Replace with your character
-            charText.setCharacterSize(TEXT_SIZE);  // Adjust size as needed
-            charText.setFillColor(TEXT_COLOUR);
-
-            // Position the text in the center of the cell
-            charText.setPosition(
-                x * CELL_SIZE + (CELL_SIZE / 2) - (charText.getLocalBounds().width / 2),
-                y * CELL_SIZE + (CELL_SIZE / 2) - (charText.getLocalBounds().height / 2)
-                );
-
-            // Store the text in the textGrid
-            this->text_grid[x][y] = charText;
+            // Adjust text position for centering
+            sf::FloatRect bounds = this->text_grid[x][y].getLocalBounds();
+            this->text_grid[x][y].setPosition(
+                x * CELL_SIZE + (CELL_SIZE - bounds.width) / 2 - bounds.left,
+                y * CELL_SIZE + (CELL_SIZE - bounds.height) / 2 - bounds.top
+            );
         }
     }
 }
 
 bool GameGUI::get_events()
 {
+    /*
+    * Checks to see if the window has recieved any events
+    * If the window is closed then returns false
+    */
+
     // Check for any events
     sf::Event event;
     while (this->window->pollEvent(event)) 
     {
         // Types of events
+
+        // Window Closed
         if (event.type == sf::Event::Closed) this->window->close();
+
+        // Cell was clicked
+        else if (event.type == sf::Event::MouseButtonPressed) 
+        {
+            // Get the mouse click position
+            sf::Vector2i mousePosition = sf::Mouse::getPosition(*this->window);
+
+            // Determine the grid cell clicked
+            Coordinate pos_clicked = 
+                Coordinate{mousePosition.x / CELL_SIZE, mousePosition.y / CELL_SIZE};
+
+            // Ensure the click is within bounds
+            if (pos_clicked < Coordinate{this->grid_x, this->grid_y} 
+                && pos_clicked >= Coordinate{0, 0})
+            {
+                if (event.mouseButton.button == sf::Mouse::Left)
+                {
+                    this->handle_cell_click(LEFT, pos_clicked);
+                }
+                else 
+                {
+                    this->handle_cell_click(RIGHT, pos_clicked);
+                }
+            }
+        }
     }
 
     // Background color
@@ -82,7 +133,23 @@ bool GameGUI::get_events()
         }
     }
 
+    // Output everything tothe window
     this->window->display();
 
     return this->window->isOpen();
+}
+
+void GameGUI::handle_cell_click(ClickType click_type, Coordinate position_clicked)
+{
+    if (click_type == LEFT) this->area_reveal(position_clicked);
+    else if (this->game_map[position_clicked.x][position_clicked.y] == UNKNOWN_CHAR)
+    {
+        this->game_map[position_clicked.x][position_clicked.y] = EMPTY_CHAR;
+        this->base_grid[position_clicked.x][position_clicked.y].setFillColor(CELL_BASE_COLOUR);
+    }
+    else if (this->game_map[position_clicked.x][position_clicked.y] == EMPTY_CHAR)
+    {
+        this->game_map[position_clicked.x][position_clicked.y] = UNKNOWN_CHAR;
+        this->base_grid[position_clicked.x][position_clicked.y].setFillColor(CELL_UNKNOWN_COLOUR);
+    }
 }

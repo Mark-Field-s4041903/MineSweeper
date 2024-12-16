@@ -2,21 +2,14 @@
 #define ASSIGN_GAMEGUI_HPP
 
 #include "../Base/GameFunctions.hpp"
+#include "../Utils/arrayUtils.hpp"
+#include "../Utils/configDefs.hpp"
+
 #include <SFML/Graphics.hpp>
+#include <exception>
 #include <string>
 
-/* For the main window */
-#define WINDOW_NAME "MineSweeper"
-#define CELL_SIZE 32
-#define OUTLINE_THICKNESS 1
-#define CELL_COLOUR sf::Color::White
-#define CELL_OUTLINE sf::Color::Black
-
-/* For the text on the window */
-#define FONT_PATH "src/Interface/Fonts/times.ttf"
-#define TEXT_SIZE 24
-#define TEXT_COLOUR sf::Color::Black
-
+enum ClickType {LEFT, RIGHT};
 
 class GameGUI : public GameFunctions
 {
@@ -33,6 +26,8 @@ class GameGUI : public GameFunctions
         /* Set a font */
         sf::Font font;
 
+        /* Click Handling */
+        void handle_cell_click(ClickType click_type, Coordinate position_clicked);
 
     public:
         /* Constructor */
