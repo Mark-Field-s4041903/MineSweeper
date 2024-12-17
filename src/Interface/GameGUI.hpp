@@ -33,9 +33,11 @@ class GameGUI : public GameFunctions
         /* Constructor */
         GameGUI(int grid_x, int grid_y, int num_mines);
 
-        /* Update Grid */
+        /* Destructor */
+        ~GameGUI();
+        
+        /* GUI Management */
         void map_update();
-
         bool get_events();
 };
 

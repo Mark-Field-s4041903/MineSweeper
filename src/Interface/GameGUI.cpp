@@ -1,11 +1,10 @@
 #include "GameGUI.hpp"
 
-GameGUI::GameGUI(int grid_x, int grid_y, int num_mines)
+GameGUI::GameGUI(int grid_x, int grid_y, int num_mines, sf::RenderWindow window)
                         : GameFunctions(grid_x, grid_y, num_mines)
 {
-    // Create a new window
-    this->window = new sf::RenderWindow(
-        sf::VideoMode(this->grid_x * CELL_SIZE, this->grid_y * CELL_SIZE), WINDOW_NAME);
+    // Create add the window
+    this->window = window;
 
     // Create the base_grid as a 2D array of sf::RectangleShape
     this->base_grid = new sf::RectangleShape*[this->grid_x];
@@ -65,7 +64,11 @@ void GameGUI::map_update()
             this->text_grid[x][y].setString(std::string(1, current_char));
 
             // If the square has now been revealed then change the colour
-            if (this->game_map[x][y] != EMPTY_CHAR && this->game_map[x][y] != UNKNOWN_CHAR)
+            if (this->game_map[x][y] != EMPTY_CHAR 
+                && this->game_map[x][y] != UNKNOWN_CHAR
+                && this->game_map[x][y] != WIN_MINE_CHAR
+                && this->game_map[x][y] != GAMEOVER_DISPLAY_CHAR
+                && this->game_map[x][y] != HIT_MINE_CHAR)
             {
                 this->base_grid[x][y].setFillColor(CELL_BACKGROUND);
             }
@@ -125,6 +128,36 @@ bool GameGUI::get_events()
     // Background color
     this->window->clear(sf::Color::Blue);
 
+    // Check if the game is complete
+    if (this->check_if_finished()) 
+    {
+        // Reveal bombs
+        for (int x = 0; x < this->grid_x; x++) {
+            for (int y = 0; y < this->grid_y; y++) {
+                if (this->mine_layout[x][y]) 
+                {
+                    this->game_map[x][y] = WIN_MINE_CHAR;
+                    this->base_grid[x][y].setFillColor(CELL_REVEALED_MIN_COLOUR);
+                }
+            }
+        }
+    }
+
+    // Check for gameover
+    else if (this->gameover)
+    {
+        // Reveal bombs - @ for the selected bomb and # for all others
+        for (int x = 0; x < this->grid_x; x++) {
+            for (int y = 0; y < this->grid_y; y++) {
+                if (this->game_map[x][y] == HIT_MINE_CHAR 
+                    || this->game_map[x][y] == GAMEOVER_DISPLAY_CHAR)
+                {
+                    this->base_grid[x][y].setFillColor(CELL_GAMEOVER_COLOUR);
+                }
+            }
+        }
+    }
+
     // Draw the base_grid in the window
     for (int x = 0; x < grid_x; ++x) {
         for (int y = 0; y < grid_y; ++y) {
@@ -152,4 +185,27 @@ void GameGUI::handle_cell_click(ClickType click_type, Coordinate position_clicke
         this->game_map[position_clicked.x][position_clicked.y] = UNKNOWN_CHAR;
         this->base_grid[position_clicked.x][position_clicked.y].setFillColor(CELL_UNKNOWN_COLOUR);
     }
+}
+
+GameGUI::~GameGUI()
+{
+    // Delete dynamically allocated base_grid
+    if (this->base_grid != nullptr) {
+        for (int i = 0; i < this->grid_y; ++i) { // numberOfRows should be the row count of your grid
+            delete[] this->base_grid[i];
+        }
+        delete[] this->base_grid;
+    }
+
+    // Delete dynamically allocated text_grid
+    if (this->text_grid != nullptr) {
+        for (int i = 0; i < this->grid_y; ++i) { // numberOfRows should be the row count of your grid
+            delete[] this->text_grid[i];
+        }
+        delete[] this->text_grid;
+    }
+
+    // Base classes should handle their own clean up
+    // No need to delete window, sf::RenderWindow handles its own memory cleanup
+    // The font object is also managed automatically by SFML, so no need for manual deletion
 }
