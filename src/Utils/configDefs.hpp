@@ -15,6 +15,8 @@
 #define OUTLINE_THICKNESS 1
 #define CELL_BASE_COLOUR sf::Color(132, 132, 132, 255) // Grey
 #define CELL_UNKNOWN_COLOUR sf::Color(255, 120, 0, 255) // Orange
+#define CELL_REVEALED_MIN_COLOUR sf::Color::Green
+#define CELL_GAMEOVER_COLOUR sf::Color::Red
 #define CELL_BACKGROUND sf::Color::White
 #define CELL_OUTLINE sf::Color::Black
 

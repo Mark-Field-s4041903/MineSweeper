@@ -5,6 +5,7 @@ GameFunctions::GameFunctions(int grid_x, int grid_y, int num_mines)
 {
     // Create game_map to hold the current game state
     this->game_map = new char*[this->grid_y];
+    this->gameover = false;
 
     // Fill game_map with ' ' (EMPTY_CHAR)
     for (int i = 0; i < grid_y; i++) {
@@ -39,8 +40,6 @@ bool GameFunctions::area_reveal(Coordinate selected_position)
     * If a zero is selected then reveal all connected zeros
     */
 
-    bool gameover = false;
-
     // Get the position type
     PositionType pos_type = this->check_position(selected_position);
 
@@ -52,8 +51,9 @@ bool GameFunctions::area_reveal(Coordinate selected_position)
     else if (pos_type == is_mine)
     {
         std::cout << "GAMEOVER" << std::endl;
+        
         // The game is now over
-        gameover = true;
+        this->gameover = true;
 
         // Reveal bombs - @ for the selected bomb and # for all others
         for (int x = 0; x < this->grid_x; x++) {
@@ -69,7 +69,7 @@ bool GameFunctions::area_reveal(Coordinate selected_position)
             static_cast<char>('0' + this->num_field[selected_position.x][selected_position.y]);
     }
 
-    return gameover;
+    return this->gameover;
 }
 
 void GameFunctions::floodfill_zeroes(Coordinate current_pos) 

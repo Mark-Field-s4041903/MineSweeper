@@ -32,6 +32,9 @@ class GameFunctions : public GenerateMineField
     private:
         PositionType check_position(Coordinate selected_position);
         void floodfill_zeroes(Coordinate current_pos);
+
+    protected:
+        bool gameover;
 };
 
 #endif //ASSIGN_GAMEFUNCTIONS_HPP

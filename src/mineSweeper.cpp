@@ -46,6 +46,9 @@ int main(int argc, char** argv) {
             completed = window->check_if_finished();
             window->map_update();
         }
+
+        // Game is finished
+        delete window;
     }
 
     return EXIT_SUCCESS;
