@@ -94,7 +94,7 @@ bool GameGUI::get_events()
     sf::Event event;
     while (this->window->pollEvent(event)) 
     {
-        // Types of events
+        /* Types of events */
 
         // Window Closed
         if (event.type == sf::Event::Closed) this->window->close();

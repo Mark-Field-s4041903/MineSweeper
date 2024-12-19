@@ -9,8 +9,11 @@
 #define GAMEOVER_DISPLAY_CHAR '@'
 #define WIN_MINE_CHAR '!'
 
-/* GUI: For the main window */
+/* GUI: For the main menu */
 #define WINDOW_NAME "MineSweeper"
+#define MENU_SIZE 800
+
+/* GUI: For the game window */
 #define CELL_SIZE 32
 #define OUTLINE_THICKNESS 1
 #define CELL_BASE_COLOUR sf::Color(132, 132, 132, 255) // Grey

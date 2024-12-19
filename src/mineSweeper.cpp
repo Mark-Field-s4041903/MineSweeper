@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "Base/GameFunctions.hpp"
-#include "Interface/GameGUI.hpp"
+#include "Interface/MainGUI.hpp"
 
 #define USE_TERMINAL 0
 
@@ -36,16 +36,8 @@ int main(int argc, char** argv) {
     }
     else
     {
-        GameGUI *window = new GameGUI(size_x, size_y, num_mines);
-        window->place_mines(num_mines); 
-        window->fill_num_field();
-
-        window->map_update();
-        while(window->get_events())
-        {
-            completed = window->check_if_finished();
-            window->map_update();
-        }
+        MainGUI *window = new MainGUI();
+        window->game_loop();
 
         // Game is finished
         delete window;

@@ -14,7 +14,8 @@ class MainGUI
 
     private:
         sf::RenderWindow* window;
-        GameGUI* game_gui;
+        GameGUI* game_gui  = nullptr;
+        bool manage_events();
 
 
 };
