@@ -91,7 +91,7 @@ bool GameGUI::get_events()
     sf::Event event;
     while (this->window->pollEvent(event)) 
     {
-        // Types of events
+        /* Types of events */
 
         // Window Closed
         if (event.type == sf::Event::Closed) this->window->close();
@@ -125,6 +125,36 @@ bool GameGUI::get_events()
     // Background color
     this->window->clear(sf::Color::Blue);
 
+    // Check if the game is complete
+    if (this->check_if_finished()) 
+    {
+        // Reveal bombs
+        for (int x = 0; x < this->grid_x; x++) {
+            for (int y = 0; y < this->grid_y; y++) {
+                if (this->mine_layout[x][y]) 
+                {
+                    this->game_map[x][y] = WIN_MINE_CHAR;
+                    this->base_grid[x][y].setFillColor(CELL_REVEALED_MIN_COLOUR);
+                }
+            }
+        }
+    }
+
+    // Check for gameover
+    else if (this->gameover)
+    {
+        // Reveal bombs - @ for the selected bomb and # for all others
+        for (int x = 0; x < this->grid_x; x++) {
+            for (int y = 0; y < this->grid_y; y++) {
+                if (this->game_map[x][y] == HIT_MINE_CHAR 
+                    || this->game_map[x][y] == GAMEOVER_DISPLAY_CHAR)
+                {
+                    this->base_grid[x][y].setFillColor(CELL_GAMEOVER_COLOUR);
+                }
+            }
+        }
+    }
+
     // Draw the base_grid in the window
     for (int x = 0; x < grid_x; ++x) {
         for (int y = 0; y < grid_y; ++y) {
@@ -138,6 +168,7 @@ bool GameGUI::get_events()
 
     return this->window->isOpen();
 }
+
 
 void GameGUI::handle_cell_click(ClickType click_type, Coordinate position_clicked)
 {
