@@ -65,7 +65,11 @@ void GameGUI::map_update()
             this->text_grid[x][y].setString(std::string(1, current_char));
 
             // If the square has now been revealed then change the colour
-            if (this->game_map[x][y] != EMPTY_CHAR && this->game_map[x][y] != UNKNOWN_CHAR)
+            if (this->game_map[x][y] != EMPTY_CHAR 
+                && this->game_map[x][y] != UNKNOWN_CHAR
+                && this->game_map[x][y] != WIN_MINE_CHAR
+                && this->game_map[x][y] != GAMEOVER_DISPLAY_CHAR
+                && this->game_map[x][y] != HIT_MINE_CHAR)
             {
                 this->base_grid[x][y].setFillColor(CELL_BACKGROUND);
             }

@@ -41,9 +41,8 @@ int main(int argc, char** argv) {
         window->fill_num_field();
 
         window->map_update();
-        while(window->get_events())
+        while(window->get_events() && !window->check_if_finished())
         {
-            completed = window->check_if_finished();
             window->map_update();
         }
 
